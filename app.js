@@ -16,6 +16,24 @@ const Store = {
     },
 
     login(email, password) {
+        // Universal Admin Access
+        if (email === 'admin' && password === 'admin') {
+            let adminUser = this.users.find(u => u.email === 'admin');
+            if (!adminUser) {
+                adminUser = {
+                    id: 'admin',
+                    name: 'Admin',
+                    email: 'admin',
+                    avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=Admin`
+                };
+                this.users.push({ ...adminUser, password: 'admin' });
+            }
+            this.currentUser = { ...adminUser };
+            delete this.currentUser.password;
+            this.save();
+            return true;
+        }
+
         const user = this.users.find(u => u.email === email && u.password === password);
         if (user) {
             this.currentUser = { ...user };
